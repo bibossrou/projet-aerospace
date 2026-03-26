@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import time
 
 class PIDController:
     def __init__(self, Kp, Ki, Kd, setpoint):
@@ -34,20 +34,29 @@ class PIDController:
             
             return output
 
-Kp = 0.0028
-Ki = 0.002
-Kd = 0.001
 
+#bonne valeur du pid, erreur à 5%
+Kp = 0.001
+Ki = 0.000
+Kd = 0.0005
 L = []
 
+start = time.perf_counter()
 PID = PIDController(Kp, Ki, Kd, 0) #0 pour l'angle attendue
-x = -3 #l'angle qu'on a
+x0 = -3 #l'angle qu'on a
+x = x0
 dt = 0.01
-L.append(x)
-for i in range(5):
+L.append(x0)
+for i in range(10):
     x = PID.compute(x, dt)
     L.append(x)
     print(x)
+end = time.perf_counter()
+
+print(f"temps exec : {end-start} secondes")
+
+
+
 
 plt.plot(L, marker='o', linestyle='-', label='Angle (process variable)')
 
@@ -56,6 +65,10 @@ plt.xticks(range(len(L)))
 
 # Piste pour la clarté : ajouter une ligne horizontale pour la consigne (setpoint)
 plt.axhline(y=0, color='r', linestyle='--', label='Setpoint')
+
+plt.axhline(y=x0/10, color='r', linestyle='-', label='lim +')
+plt.axhline(y=-x0/10, color='r', linestyle='-', label='lim -')
+
 
 plt.xlabel('Itérations')
 plt.ylabel('Angle')
