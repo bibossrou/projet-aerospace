@@ -32,13 +32,97 @@ gas_mass_flow_rate_out=0,
 
 
 
-MoteurTest = rocketpy.HybridMotor(
+MoteurTest = rocketpy.HybridMotor( #valeurs un peu aléatoires pour voir ce que ça fait, et les modifier pour observer.
 thrust_source= 1000,
 dry_mass= 2,
+dry_inertia = (0.125, 0.125, 0.002),
+nozzle_radius= 0.11,
+grain_number= 8,
+grain_separation= 0,
+grain_outer_radius= 0.0575,
+grain_initial_inner_radius= 0.025,
+grain_initial_height= 0.1775,
+grain_density= 900,
+grains_center_of_mass_position=0.410,
+center_of_dry_mass_position= 0.200,
+nozzle_position= -0.6,
+burn_time= 10,
+throat_radius=  0.04)
+
+MoteurTest.add_tank(tank_oxidizer, position= 1.0615)
+
+# MoteurTest.all_info()
 
 
 
-)
+fusee_essai = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce que la simulation fait.
+    radius= 0.22,
+    mass = 15,
+    inertia = (6.321, 6.321, 0.034), #aucne idée de ce que ceci fait exactement
+    power_on_drag= "./test_PowerOnDrag.csv",
+    power_off_drag= "./test_powerOffDrag.csv",
+    center_of_mass_without_motor= 0,
+    coordinate_system_orientation= "tail_to_nose"
+    )
+
+fusee_essai.add_motor(MoteurTest, position= -0.9)
+
+coiffe = fusee_essai.add_nose(length=0.5, kind = 'tangent', position = 1.278) #tangent kind of cone looks the best
+
+fin_groupe = fusee_essai.add_trapezoidal_fins(
+    n = 4,
+    span = 0.40,
+    root_chord= 0.5,
+    tip_chord= 0.09,
+    position = -0.8,
+    cant_angle= 15)
+
+tail = fusee_essai.add_tail(
+    top_radius= 0.22,
+    bottom_radius= 0.1,
+    position = -1.3,
+    length= 0.2)
 
 
+
+def parachute_tiré(p, h, y):
+    if y[2] < 1200 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
+        return True
+    else:
+        return False
+    
+
+parachute = fusee_essai.add_parachute(
+    cd_s = 5.0,
+    name = "parachute",
+    trigger = parachute_tiré,
+    sampling_rate= 200,
+    lag = 1.5,
+    noise = (0, 20, 0.5))
+
+
+fusee_essai.draw() #dessiner pour voir ce à quoi elle ressemble, avant d'ajouter tout le bazar.
+
+"""
+Fin de la définition de la fusée.
+"""
+
+
+
+#fusee_essai.plots.all() #soyons fous et dessinons tous ce qu'on peut dessiner
+fusee_essai.plots.static_margin() #il faut une valeure positive pas trop élevée --> plus c'est élevé plus la fusée sera stable, mais si c'est trop élevé la simulation ne marchera aps
+
+# fusee_essai.all_info()
+
+
+
+"""
+Début de la simulation.
+"""
+
+vol_simu = rocketpy.Flight(
+    rocket = fusee_essai, environment = env, rail_length = 5.0, inclination = 85, heading=  90)
+
+vol_simu.info()
+vol_simu.plots.all()
 
