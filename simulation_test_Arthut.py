@@ -1,6 +1,7 @@
 #pip install datetime
 import rocketpy
 import datetime
+from rocketpy.utilities import apogee_by_mass, liftoff_speed_by_mass
 
 
 
@@ -87,7 +88,7 @@ tail = fusee_essai.add_tail(
 
 
 def parachute_tiré(p, h, y):
-    if y[2] < 1500 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
+    if y[2] < 600 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
         return True
     else:
         return False
@@ -98,7 +99,7 @@ parachute = fusee_essai.add_parachute(
     name = "parachute",
     trigger = parachute_tiré,
     sampling_rate= 200,
-    lag = 1.5,
+    lag = 3.0,
     noise = (0, 20, 0.5))
 
 
@@ -122,8 +123,16 @@ Début de la simulation.
 """
 
 vol_simu = rocketpy.Flight(
-    rocket = fusee_essai, environment = env, rail_length = 5.0, inclination = 85, heading=  90)
+    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 80, heading=  90)
 
 vol_simu.info()
-vol_simu.plots.all()
+vol_simu.plots.trajectory_3d()
 
+
+
+### Analysis of the simulation:
+
+#apogee_by_mass(vol_simu, min_mass = 5, max_mass = 20, points = 20, plot = True)
+
+
+#liftoff_speed_by_mass(flight = vol_simu, min_mass = 5, max_mass = 20, points= 20, plot = True)
