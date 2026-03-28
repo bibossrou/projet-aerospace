@@ -3,17 +3,18 @@ import rocketpy
 import datetime
 
 
-env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 60) #définuir la position, et l'atlitude
 
 demain = datetime.date.today() + datetime.timedelta(days= 1) #mettre la date de la simulation à demain
+date_info = (demain.year, demain.month, demain.day, 12)  # Hour given in UTC time
 
+env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 60, date = date_info) #définuir la position, et l'atlitude
 
-env.set_atmospheric_model(type = "standard_atmosphere") #modèles stancdard --> pas de vent
+env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
 # env.info()
 oxidizer_liq = rocketpy.Fluid(name = "Flui_test_liquide", density = 1220) #notre oxidizant liquide
 oxidizer_gaz = rocketpy.Fluid(name = 'test_fluide_gaz', density = 1.9277) #notre oxidisant gaz
 
-tank_shape = rocketpy.CylindricalTank(radius= 0.20, height = 1.0) #forme du tank, dans ce cas cylindrical de hauteur 1m et diametre 40 cm.
+tank_shape = rocketpy.CylindricalTank(radius= 0.15, height = 1.0) #forme du tank, dans ce cas cylindrical de hauteur 1m et diametre 30 cm.
 
 
 tank_oxidizer = rocketpy.MassFlowRateBasedTank( #le conteneur du carbu liquide
@@ -22,10 +23,10 @@ geometry = tank_shape,
 flux_time= 10.0,
 liquid = oxidizer_liq,
 gas = oxidizer_gaz,
-initial_liquid_mass= 5.0,
+initial_liquid_mass= 3.0,
 initial_gas_mass= 0,
 liquid_mass_flow_rate_in= 0,
-liquid_mass_flow_rate_out= (5.0-0.250)/10,
+liquid_mass_flow_rate_out= (3.0-0.1)/10,
 gas_mass_flow_rate_in= 0,
 gas_mass_flow_rate_out=0,
 )
@@ -33,8 +34,8 @@ gas_mass_flow_rate_out=0,
 
 
 MoteurTest = rocketpy.HybridMotor( #valeurs un peu aléatoires pour voir ce que ça fait, et les modifier pour observer.
-thrust_source= 1000,
-dry_mass= 2,
+thrust_source= 1500,
+dry_mass= 3.0,
 dry_inertia = (0.125, 0.125, 0.002),
 nozzle_radius= 0.11,
 grain_number= 8,
@@ -56,7 +57,7 @@ MoteurTest.add_tank(tank_oxidizer, position= 1.0615)
 
 
 fusee_essai = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce que la simulation fait.
-    radius= 0.22,
+    radius= 0.17,
     mass = 15,
     inertia = (6.321, 6.321, 0.034), #aucne idée de ce que ceci fait exactement
     power_on_drag= "./test_PowerOnDrag.csv",
@@ -86,7 +87,7 @@ tail = fusee_essai.add_tail(
 
 
 def parachute_tiré(p, h, y):
-    if y[2] < 1200 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
+    if y[2] < 1500 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
         return True
     else:
         return False
