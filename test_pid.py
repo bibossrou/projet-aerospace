@@ -2,8 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
+#Kp = 40*masse
+#Ki = 50*masse
+#Kd = 30*masse
+
 class PIDController:
-    def __init__(self, Kp, Ki, Kd, setpoint):
+    def __init__(self, Kp, Ki , Kd, setpoint):
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
@@ -11,20 +15,20 @@ class PIDController:
         self.previous_error = 0
         self.integral = 0
 
-    def compute(self, process_variable, dt):
+    def compute(self, process_variable, dt, masse):
             # Calculate error
             error = self.setpoint - process_variable
             
             # Proportional term
-            P_out = self.Kp * error
+            P_out = self.Kp * error*masse
             
             # Integral term
-            self.integral += error * dt
+            self.integral += error * dt*masse
             I_out = self.Ki * self.integral
             
             # Derivative term
             derivative = (error - self.previous_error) / dt
-            D_out = self.Kd * derivative
+            D_out = self.Kd * derivative*masse
             
             # Compute total output
             output = P_out + I_out + D_out
@@ -36,18 +40,17 @@ class PIDController:
 
 masse = 1     # Inertie de ton système
 
-'''
+
 #bonne valeur du pid, faible erreur mais trop lent
 Kp = 1.5*masse
 Ki = 0.5*masse
 Kd = 15*masse
-'''
-'''
+
 #bonne valeur du PID, réactif et erreur faible
 Kp = 10*masse
 Ki = 0.5*masse
 Kd = 15*masse
-'''
+
 Kp = 40*masse
 Ki = 50*masse
 Kd = 30*masse
@@ -56,8 +59,8 @@ Kd = 30*masse
 L = []
 
 start = time.perf_counter()
-PID = PIDController(Kp, Ki, Kd, 90) #0 pour l'angle attendue
-x0 = 80 #l'angle qu'on a
+PID = PIDController(Kp, Ki, Kd, 0) #0 pour l'angle attendue
+x0 = -5 #l'angle qu'on a
 
 L.append(x0)
 # Initialisation physique
@@ -68,7 +71,7 @@ dt = 0.02
 
 for i in range(500): # On augmente un peu car l'inertie ralentit tout
     # 1. Le PID calcule la FORCE à appliquer
-    force = PID.compute(x, dt)
+    force = PID.compute(x, dt, masse)
     
     # 2. Physique : Accélération = Force / Masse
 
