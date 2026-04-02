@@ -56,8 +56,8 @@ Kd = 30*masse
 L = []
 
 start = time.perf_counter()
-PID = PIDController(Kp, Ki, Kd, 0) #0 pour l'angle attendue
-x0 = -5 #l'angle qu'on a
+PID = PIDController(Kp, Ki, Kd, 90) #0 pour l'angle attendue
+x0 = 80 #l'angle qu'on a
 
 L.append(x0)
 # Initialisation physique
