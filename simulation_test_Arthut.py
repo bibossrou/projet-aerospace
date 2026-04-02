@@ -21,13 +21,13 @@ tank_shape = rocketpy.CylindricalTank(radius= 0.04, height = 0.8) #forme du tank
 tank_oxidizer = rocketpy.MassFlowRateBasedTank( #le conteneur du carbu liquide
 name = 'Tank_test',
 geometry = tank_shape,
-flux_time= 15,
+flux_time= 8.4,
 liquid = oxidizer_liq,
 gas = oxidizer_gaz,
-initial_liquid_mass= 1.5-0.000001,
-initial_gas_mass= 0.000001,
-liquid_mass_flow_rate_in= (0.000001)/20,
-liquid_mass_flow_rate_out= (1.5-0.01)/15.0, #il faut mettre une valeur un peu en dessous de la masse initial du liquide, d'où le -0.01
+initial_liquid_mass= 0.315, #en utilisant les svaleurss du moteur en question.
+initial_gas_mass= 0,
+liquid_mass_flow_rate_in=0 ,
+liquid_mass_flow_rate_out= (0.315-0.0000001)/8.4, #il faut mettre une valeur un peu en dessous de la masse initial du liquide, d'où le -0.01
 # liquid_mass_flow_rate_out = (tank_oxidizer.initial_liquid_mass - 0.01)/tank_oxidizer.flux_time,
 gas_mass_flow_rate_in= 0,
 gas_mass_flow_rate_out=0,
@@ -35,22 +35,22 @@ gas_mass_flow_rate_out=0,
 
 
 
-MoteurTest = rocketpy.HybridMotor( #valeurs un peu aléatoires pour voir ce que ça fait, et les modifier pour observer.
-thrust_source= "./pousée_variable.csv",
+MoteurTest = rocketpy.HybridMotor( #valeurs un peu aléatoires pour voir ce que ça fait, et les modifier pour observer --> utilisation du moteur G123_HP(à peu près ce que l'on cherche).
+thrust_source= "./RATT_K240H.csv", #changer le nom du csv
 interpolation_method= "linear",
-dry_mass= 4,
-dry_inertia = (0.181, 0.181, 0.005), # Inertie centre de masse quand tout le carburant est recgargé, calculé en utilisant l'aide de différentes ia.    
-nozzle_radius= 0.05,
-grain_number= 2,
+dry_mass= (2.814-1.293),
+dry_inertia = (0.105, 0.105, 0.00138), # Inertie centre de masse quand tout le carburant est recgargé, calculé en utilisant l'aide de différentes ia.    
+nozzle_radius= 0.020, #approx 4 x pi x throat_radiuss^2.
+grain_number= 8,
 grain_separation= 0,
-grain_outer_radius= 0.04,
-grain_initial_inner_radius= 0.025,
-grain_initial_height= 0.1775,
+grain_outer_radius= 0.06,
+grain_initial_inner_radius= 0.05,
+grain_initial_height= (0.908/8),
 grain_density= 900,
 grains_center_of_mass_position=0.355,
 center_of_dry_mass_position= 0.200,
 nozzle_position= -0.2,
-burn_time= 15,
+burn_time= 8.4,
 throat_radius=  0.01)
 
 MoteurTest.add_tank(tank_oxidizer, position= 1.150)
@@ -62,7 +62,7 @@ MoteurTest.add_tank(tank_oxidizer, position= 1.150)
 fusee_essai = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce que la simulation fait.
     radius= 0.125/2,
     mass = 4,
-    inertia = (6.321, 6.321, 0.034), #aucne idée de ce que ceci fait exactement
+   inertia = (0.585, 0.585, 0.008), #aucne idée de ce que ceci fait exactement
     power_on_drag= "./test_PowerOnDrag.csv",
     power_off_drag= "./test_powerOffDrag.csv",
     center_of_mass_without_motor= 0,
@@ -90,7 +90,7 @@ tail = fusee_essai.add_tail(
 
 
 def parachute_tiré(p, h, y):
-    if y[2] < 2000 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
+    if y[2] < 300 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
         return True
     else:
         return False
