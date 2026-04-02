@@ -36,7 +36,8 @@ gas_mass_flow_rate_out=0,
 
 
 MoteurTest = rocketpy.HybridMotor( #valeurs un peu aléatoires pour voir ce que ça fait, et les modifier pour observer.
-thrust_source= 100,
+thrust_source= "./pousée_variable.csv",
+interpolation_method= "linear",
 dry_mass= 4,
 dry_inertia = (0.181, 0.181, 0.005), # Inertie centre de masse quand tout le carburant est recgargé, calculé en utilisant l'aide de différentes ia.    
 nozzle_radius= 0.05,
