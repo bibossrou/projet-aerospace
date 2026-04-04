@@ -1,0 +1,2 @@
+motor_name, dry_mass, motor_length, motor_outer_radius, motor_inner_radius, I11, I22, I33, nozzle_radius, center_of_dry_mass_position, nozzle_position, burn_time, reshape, interpolation_method,orientation, reference_pressure
+Contrail_G123-HP, 1.521, 0.908, 0.07, 0.06, 0.105, 0.105, 0.00138, 0.020, 0.200, -0.2, 8.4, False, linear, tail_to_nose, 1013.25
