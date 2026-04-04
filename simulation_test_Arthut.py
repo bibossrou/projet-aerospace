@@ -8,10 +8,11 @@ from rocketpy.utilities import apogee_by_mass, liftoff_speed_by_mass
 demain = datetime.date.today() + datetime.timedelta(days= 1) #mettre la date de la simulation à demain
 date_info = (demain.year, demain.month, demain.day, 12)  # Hour given in UTC time
 
-env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 60, date = date_info) #définuir la position, et l'atlitude
+env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 0, date = date_info) #définuir la position, et l'atlitude
 
 env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
-# env.info()
+env.max_expected_height = 4000 #hauteur maximum de 3000 mètres, ceci va diminuer le calcul fait, et l'arré^ter à 3'000 mètres.
+#env.all_info()
 oxidizer_liq = rocketpy.Fluid(name = "Protoxide d'azote", density = 1223) #notre oxidizant liquide, du protoxide d'azote
 oxidizer_gaz = rocketpy.Fluid(name = 'test_fluide_gaz', density = 1.80) #notre oxidisant gaz
 
@@ -41,21 +42,23 @@ interpolation_method= "linear",
 dry_mass= (2.814-1.293),
 dry_inertia = (0.105, 0.105, 0.00138), # Inertie centre de masse quand tout le carburant est recgargé, calculé en utilisant l'aide de différentes ia.    
 nozzle_radius= 0.020, #approx 4 x pi x throat_radiuss^2.
-grain_number= 8,
+grain_number= 6,
 grain_separation= 0,
-grain_outer_radius= 0.06,
-grain_initial_inner_radius= 0.05,
+grain_outer_radius= 0.058,
+grain_initial_inner_radius= 0.048,
 grain_initial_height= (0.908/8),
 grain_density= 900,
-grains_center_of_mass_position=0.355,
-center_of_dry_mass_position= 0.200,
-nozzle_position= -0.2,
+grains_center_of_mass_position=0.380,
+center_of_dry_mass_position= 0.220,
+nozzle_position= -0.10,
 burn_time= 8.4,
 throat_radius=  0.01)
 
 MoteurTest.add_tank(tank_oxidizer, position= 1.150)
 
-# MoteurTest.all_info()
+#MoteurTest.all_info()
+#MoteurTest.plots.all()
+MoteurTest.plots.thrust()
 
 
 
@@ -85,7 +88,7 @@ tail = fusee_essai.add_tail(
     top_radius= 0.125/2,
     bottom_radius= (0.125+0.05)/2,
     position = -0.6,
-    length= 0.15)
+    length= 0.105)
 
 
 
@@ -96,12 +99,18 @@ def parachute_tiré(p, h, y):
         return False
     
 
+parachute_drogue = fusee_essai.add_parachute( #premier parachute, il va être déployé à l'apogee. 
+    cd_s = 0.5,
+    name = "drogue_parachute",
+    trigger= "apogee" #il s'active à l'apogee
+)
+
 parachute = fusee_essai.add_parachute(
-    cd_s = 5.0,
+    cd_s = 10,
     name = "parachute",
     trigger = parachute_tiré,
-    sampling_rate= 200,
-    lag = 3.0,
+    sampling_rate= 100,
+    lag = 1.0,
     noise = (0, 20, 0.5))
 
 
@@ -114,9 +123,9 @@ Fin de la définition de la fusée.
 
 
 #fusee_essai.plots.all() #soyons fous et dessinons tous ce qu'on peut dessiner
-#fusee_essai.plots.static_margin() #il faut une valeure positive entre 1.5 et 2 --> plus c'est élevé plus la fusée sera stable, mais si c'est trop élevé la simulation ne marchera aps
+fusee_essai.plots.static_margin() #il faut une valeure positive entre 1.5 et 2 --> plus c'est élevé plus la fusée sera stable, mais si c'est trop élevé la simulation ne marchera aps
 
-fusee_essai.all_info()
+#fusee_essai.all_info()
 
 
 
@@ -130,7 +139,7 @@ Début de la simulation.
 
 
 vol_simu = rocketpy.Flight(
-    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 80, heading=  90)
+    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 90, heading=  270)
 
 vol_simu.info()
 vol_simu.plots.trajectory_3d()
@@ -140,7 +149,7 @@ vol_simu.plots.trajectory_3d()
 
 ### Analysis of the simulation:
 
-#apogee_by_mass(vol_simu, min_mass = 5, max_mass = 20, points = 20, plot = True)
+#apogee_by_mass(vol_simu, min_mass = 7, max_mass = 15, points = 5, plot = True)
 
 
-#liftoff_speed_by_mass(flight = vol_simu, min_mass = 5, max_mass = 20, points= 20, plot = True)
+#liftoff_speed_by_mass(flight = vol_simu, min_mass = 7, max_mass = 15, points= 5, plot = True)
