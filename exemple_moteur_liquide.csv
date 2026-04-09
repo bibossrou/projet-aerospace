@@ -1,0 +1,2 @@
+oxidizer_name, oxidizer_liquid_density, oxidizer_density_gas, tank_radius, tank_length, initial_liquid_mass, initial_gas_mass, liquid_mass_flow_rate_out, flux_time, liquid_mass_flow_rate_in, gas_mass_flow_rate_in, gas_mass_flowrate_out, tank_position
+protoxide d'azote, 1223, 1.80, 0.04, 0.8, 0.315,                                    0, (0.315-0.000000000000001)/8.4, 8.4, 0, 0, 0, 1.150
