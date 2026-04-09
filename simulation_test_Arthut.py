@@ -139,9 +139,9 @@ Début de la simulation.
 vol_simu = rocketpy.Flight(
     rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 90, heading=  270, name= "Projet nameless I")
 
-#vol_simu.info()
-#vol_simu.plots.trajectory_3d()
-vol_simu.all_info()
+vol_simu.info()
+vol_simu.plots.trajectory_3d()
+#vol_simu.all_info()
 
 
 
