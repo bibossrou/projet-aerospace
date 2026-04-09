@@ -10,7 +10,8 @@ date_info = (demain.year, demain.month, demain.day, 12)  # Hour given in UTC tim
 
 env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 0, date = date_info) #définuir la position, et l'atlitude
 
-env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
+#env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
+env.set_atmospheric_model(type = 'custom_atmosphere', wind_u = 20, wind_v = 20)
 env.max_expected_height = 4000 #hauteur maximum de 3000 mètres, ceci va diminuer le calcul fait, et l'arré^ter à 3'000 mètres.
 #env.all_info()
 oxidizer_liq = rocketpy.Fluid(name = "Protoxide d'azote", density = 1223) #notre oxidizant liquide, du protoxide d'azote

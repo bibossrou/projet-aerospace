@@ -48,7 +48,7 @@ def compute_rocket_inertia(mass, outer_radius, inner_radius, length):
     return (I_11, I_22, I_33)
 
 ### définition des variables
-common_var = pd.read_csv("./exemple_motor_general.csv").iloc[0] #donner des noms aux variables, plus simple ensuite
+common_var = pd.read_csv("exemple_motor_general.csv").iloc[0] #donner des noms aux variables, plus simple ensuite
 
 nom_moteur = common_var["motor_name"]
 dry_mass = common_var["dry_mass"]
@@ -65,12 +65,13 @@ motor_inner_radius = common_var["motor_inner_radius"]
 motor_outer_radius = common_var["motor_outer_radius"]
 if (common_var["I11"] + common_var["I22"] + common_var["I33"]) == 0:
     (I_11, I_22, I_33) = compute_dry_inertia(dry_mass= dry_mass, outer_radius= motor_outer_radius, inner_radius= motor_inner_radius, length= longeur_moteur)
+    dry_inertia = (I_11, I_22, I_33)
 else:
     dry_inertia = (common_var["I11"], common_var["I22"], common_var["I33"])
 
 
 ### définition des variables - moteur solide
-solid_var = pd.read_csv("./exemple_moteur_solide.csv").iloc[0]
+solid_var = pd.read_csv("exemple_moteur_solide.csv").iloc[0]
 
 grain_number = int(solid_var["grain_number"])
 grain_density = solid_var["grain_density"]
@@ -83,7 +84,7 @@ throat_radius = solid_var["throat_radius"]
 thrust_curve_file = "./Contrail_G123-HP.csv"
 
 ### définition des variables - moteur liquide
-liquid_var = pd.read_csv("./exemple_moteur_liquide.csv").iloc[0]
+liquid_var = pd.read_csv("exemple_moteur_liquide.csv").iloc[0]
 
 oxidizer_name = liquid_var["oxidizer_name"]
 oxidizer_density_liquid = liquid_var["oxidizer_density_liquid"]
@@ -98,8 +99,8 @@ tank_position = liquid_var["tank_position"]
 tank_shape = liquid_var["tank shape"]
 
 ### sélection du type de moteur
-solid_csv = "./exemple_moteur_solide.csv"   # mettre None si pas de partie solide
-liquid_csv = "./exemple_moteur_liquide.csv" # mettre None si pas de partie liquide
+solid_csv = "exemple_moteur_solide.csv"   # mettre None si pas de partie solide
+liquid_csv = "exemple_moteur_liquide.csv" # mettre None si pas de partie liquide
 
 if solid_csv and not liquid_csv:
     # Moteur solide uniquement
