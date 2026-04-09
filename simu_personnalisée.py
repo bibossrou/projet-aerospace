@@ -96,7 +96,7 @@ initial_gas_mass = liquid_var["initial_gas_mass"]
 liquid_mass_flow_rate_out = liquid_var["liquid_mass_flow_rate_out"]
 flux_time = liquid_var["flux_time"]
 tank_position = liquid_var["tank_position"]
-tank_shape = liquid_var["tank shape"]
+#tank_shape = liquid_var["tank shape"] --> je l'ai enlevé du csv, on part sur des réservoir cylindricaux h24
 
 ### sélection du type de moteur
 solid_csv = "exemple_moteur_solide.csv"   # mettre None si pas de partie solide
@@ -173,7 +173,7 @@ elif solid_csv and liquid_csv:
         initial_liquid_mass = initial_liquid_mass,
         initial_gas_mass = initial_gas_mass,
         liquid_mass_flow_rate_in = 0,
-        liquid_mass_flow_rate_out = liquid_mass_flow_rate_out,
+        liquid_mass_flow_rate_out = liquid_mass_flow_rate_out-0.000000000001,
         gas_mass_flow_rate_in = 0,
         gas_mass_flow_rate_out = 0,
     )
