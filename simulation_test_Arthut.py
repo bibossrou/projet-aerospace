@@ -10,8 +10,8 @@ date_info = (demain.year, demain.month, demain.day, 12)  # Hour given in UTC tim
 
 env = rocketpy.Environment(latitude= 48.866667, longitude=2.333333, elevation= 0, date = date_info) #définuir la position, et l'atlitude
 
-#env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
-env.set_atmospheric_model(type = 'custom_atmosphere', wind_u = 20, wind_v = 20)
+env.set_atmospheric_model(type = "Windy", file = "ICONEU") #modèle de forecast en utilisant windy, disponible en europe.
+#env.set_atmospheric_model(type = 'custom_atmosphere', wind_u = 20, wind_v = 20)
 env.max_expected_height = 4000 #hauteur maximum de 3000 mètres, ceci va diminuer le calcul fait, et l'arré^ter à 3'000 mètres.
 #env.all_info()
 oxidizer_liq = rocketpy.Fluid(name = "Protoxide d'azote", density = 1223) #notre oxidizant liquide, du protoxide d'azote
@@ -47,8 +47,8 @@ grain_outer_radius= 0.050,
 grain_initial_inner_radius= 0.035,
 grain_initial_height= (0.908/6),
 grain_density= 900,
-grains_center_of_mass_position=0.680,
-center_of_dry_mass_position= 0.520,
+grains_center_of_mass_position=0.780,
+center_of_dry_mass_position= 0.620,
 nozzle_position= -0.06,
 burn_time= 8.4,
 throat_radius=  0.01)
@@ -99,7 +99,7 @@ def parachute_tiré(p, h, y):
     
 
 parachute_drogue = fusee_essai.add_parachute( #premier parachute, il va être déployé à l'apogee. 
-    cd_s = 0.1,
+    cd_s = 0.3,
     name = "drogue_parachute",
     trigger= "apogee" #il s'active à l'apogee
 )
@@ -112,11 +112,14 @@ parachute = fusee_essai.add_parachute(
     lag = 1.0,
     noise = (0, 10, 0.3))
 
+fusee_essai.set_rail_buttons(upper_button_position=1.01, lower_button_position=-0.132)
+
 
 fusee_essai.draw() #dessiner pour voir ce à quoi elle ressemble, avant d'ajouter tout le bazar.
 
 """
 Fin de la définition de la fusée.
+Ajout du PID de Geoffroy
 """
 
 
@@ -138,7 +141,7 @@ Début de la simulation.
 
 
 vol_simu = rocketpy.Flight(
-    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 90, heading=  270, name= "Projet nameless I")
+    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 80, heading=  350, name= "Projet nameless I")
 
 vol_simu.info()
 vol_simu.plots.trajectory_3d()

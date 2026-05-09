@@ -216,7 +216,7 @@ Fin de la définition du moteur, les 3 sont possibles.
 """
 Début de la définition de la fusée en elle même.
 """
-
+'''
 fusee_essai = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce que la simulation fait.
     radius= 0.125/2,
     mass = 4,
@@ -247,7 +247,101 @@ def parachute_tiré(p, h, y):
     if y[2] < 300 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
         return True
     else:
+        return False'''
+
+
+fusee_essai = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce que la simulation fait.
+    radius= 0.125/2,
+    mass = 4,
+   inertia = (0.585, 0.585, 0.008), #aucne idée de ce que ceci fait exactement
+    power_on_drag= "./test_PowerOnDrag.csv",
+    power_off_drag= "./test_powerOffDrag.csv",
+    center_of_mass_without_motor= 0,
+    coordinate_system_orientation= "tail_to_nose"
+    )
+
+fusee_essai.add_motor(moteur, position= -0.38)
+
+coiffe = fusee_essai.add_nose(length=0.25, kind = 'conical', position = 1.278) #tangent kind of cone looks the best
+
+fin_groupe = fusee_essai.add_trapezoidal_fins(
+    n = 4,
+    span = 0.20,
+    root_chord= 0.18,
+    tip_chord= 0.04,
+    position = -0.40+0.15 + 0.02 +0.1,
+    cant_angle= 4)
+
+tail = fusee_essai.add_tail(
+    top_radius= 0.110/2,
+    bottom_radius= (0.110+0.05)/2,
+    position = -0.4+0.1,
+    length= 0.08)
+
+
+
+def parachute_tiré(p, h, y):
+    if y[2] < 300 and y[5] < 0: #y[2] est la hauteur, est y[5] est la vitesse sur l'axe z, donc la vitesse verticale. --> ca fait qui le parachute se déploie si la hauteur est inférieure à 1200m et que la vitesse verticale est négative
+        return True
+    else:
         return False
+    
+
+parachute_drogue = fusee_essai.add_parachute( #premier parachute, il va être déployé à l'apogee. 
+    cd_s = 0.1,
+    name = "drogue_parachute",
+    trigger= "apogee" #il s'active à l'apogee
+)
+
+parachute = fusee_essai.add_parachute(
+    cd_s = 10,
+    name = "parachute_principal",
+    trigger = parachute_tiré,
+    sampling_rate= 100,
+    lag = 1.0,
+    noise = (0, 10, 0.3))
+
+
+fusee_essai.draw() #dessiner pour voir ce à quoi elle ressemble, avant d'ajouter tout le bazar.
+
+"""
+Fin de la définition de la fusée.
+"""
+
+
+
+#fusee_essai.plots.all() #soyons fous et dessinons tous ce qu'on peut dessiner
+fusee_essai.plots.static_margin() #il faut une valeure positive entre 1.5 et 2 --> plus c'est élevé plus la fusée sera stable, mais si c'est trop élevé la simulation ne marchera aps
+
+#fusee_essai.all_info()
+
+
+
+
+
+"""
+Début de la simulation.
+"""
+
+
+
+
+vol_simu = rocketpy.Flight(
+    rocket = fusee_essai, environment = env, rail_length = 4.0, inclination = 90, heading=  270, name= "Projet nameless I")
+
+vol_simu.info()
+vol_simu.plots.trajectory_3d()
+#vol_simu.all_info()
+
+
+
+
+### Analysis of the simulation:
+
+#apogee_by_mass(vol_simu, min_mass = 7, max_mass = 15, points = 5, plot = True)
+
+
+#liftoff_speed_by_mass(flight = vol_simu, min_mass = 7, max_mass = 15, points= 5, plot = True)'''
     
 
     
