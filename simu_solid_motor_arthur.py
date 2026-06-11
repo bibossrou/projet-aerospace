@@ -61,7 +61,7 @@ moteur_test = rocketpy.SolidMotor(
         # --- Nozzle ---
     nozzle_radius=27.0 / 1000,       # 54mm hybrid nozzle → radius = 27mm (case fit)
     throat_radius=7.95/2 / 1000,       # Ø0.313 inches = 7.95mm diameter → radius = 3.975mm
-    nozzle_position=-0.16,               # aft end reference
+    nozzle_position=-0.1,               # aft end referenc
 
     # --- Grains (2 grains: 1 aft + 1 fwd) ---
     grain_number=2,
@@ -97,7 +97,7 @@ fusee_solide = rocketpy.Rocket( #valeur un peu aléatoire, encore pour voir ce q
     )
 
 
-fusee_solide.add_motor(moteur_test, position= -0.30) #-0.36 pour que ca soit bien casé bien comme il faut
+fusee_solide.add_motor(moteur_test, position= -0.36) #-0.36 pour que ca soit bien casé bien comme il faut
 
 
 
@@ -109,26 +109,30 @@ def parachute_tiré(p, h, y):
     else:
         return False
     
-
+'''
 parachute_drogue = fusee_solide.add_parachute( #premier parachute, il va être déployé à l'apogee. 
-    cd_s = 0.3,
+    cd_s = 1.0,
     name = "drogue_parachute",
     trigger= "apogee" #il s'active à l'apogee
 )
 
 parachute = fusee_solide.add_parachute(
-    cd_s = 10,
+    cd_s = 7 ,
     name = "parachute_principal",
     trigger = parachute_tiré,
     sampling_rate= 100,
     lag = 1.0,
     noise = (0, 10, 0.3))
+'''
 
 fusee_solide.add_tail( position= -0.38, length = 0.08, top_radius = 0.125/2, bottom_radius= (0.125/2)/2) #meme rayon en haut que celui de la fusee
 fusee_solide.add_trapezoidal_fins( n = 4, span = 0.20, root_chord = 0.18, tip_chord = 0.02, position = -0.38 + 0.03 + 0.18, cant_angle = 4)
-fusee_solide.draw() #dessiner pour voir ce à quoi elle ressemble, avant d'ajouter tout le bazar.
-
-simulation_basique = rocketpy.Flight(rocket = fusee_solide, environment = env, inclination= 85, heading = 0, rail_length= 4)
 
 
-simulation_basique.all_info()
+fusee_solide.add_trapezoidal_fins(n = 4, span = 0.15, root_chord = 0.14, tip_chord = 0.03, position = 1, cant_angle = 3)
+fusee_solide.all_info()
+
+simulation_basique = rocketpy.Flight(rocket = fusee_solide, environment = env, inclination= 45, heading = 90, rail_length= 4)
+
+simulation_basique.plots.trajectory_3d()
+simulation_basique.info()
