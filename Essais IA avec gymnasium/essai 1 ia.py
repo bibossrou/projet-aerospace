@@ -70,4 +70,4 @@ def run_the_agent(episodes:int = 1000, render:bool = False, training:bool = True
 
 
 if __name__ == "__main__": #aucune idée de ce que c'est, mais ça a l'air d'être un chien de garde contre les erreurs éventuelles.
-    run_the_agent(episodes= 60000, render = False, training = False, rainy = False, fickle_passenger = False)
+    run_the_agent(episodes= 60000, render = True, training = False, rainy = True, fickle_passenger = True)
